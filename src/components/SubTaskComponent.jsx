@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { retrieveTask, updateTask, createNewTask } from "./api/TasksApiServiceCall"
+import { retrieveSubTask, updateSubTask, createNewSubTask } from "./api/TasksApiServiceCall"
 import { useNavigate, useParams } from "react-router-dom"
 import { Form, Formik, Field, ErrorMessage } from "formik"
 import moment from "moment"
 
-function TaskComponent(){
+function SubTaskComponent(){
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
@@ -12,7 +12,7 @@ function TaskComponent(){
     const [dateCreated, setDateCreated] = useState("")
     const [message, setMessage] = useState("")
 
-    const {id} = useParams()
+    const {id, sub_id} = useParams()
     const navigate = useNavigate()
 
     useEffect(
@@ -21,14 +21,15 @@ function TaskComponent(){
 
     function retrieveTaskData() {
         // id is -1 for new tasks. Only retrieve task for existing ids
-        if (id != -1){
-            retrieveTask(id)
+        if (sub_id != -1){
+            retrieveSubTask(id, sub_id)
             .then(respone => {
-                console.log(respone.data.messsage)
-                setName(respone.data.taskItem.taskItemName)
-                setDescription(respone.data.taskItem.taskItemDescription)
-                setDueDate(respone.data.taskItem.dueDate)
-                setDateCreated(respone.data.taskItem.dateCreated)
+                console.log("Retrieved sub task: ")
+                console.log(respone.data.message)
+                setName(respone.data.subTask.subTaskName)
+                setDescription(respone.data.subTask.subTaskDescription)
+                setDueDate(respone.data.subTask.dueDate)
+                setDateCreated(respone.data.subTask.dateCreated)
             })
             .catch(error => {
                 console.log(error)
@@ -38,22 +39,23 @@ function TaskComponent(){
     }
 
     function onSubmit(values){
-        const task = {
-            taskItemName: values.name,
-            taskItemDescription: values.description,
+        const sub_task = {
+            subTaskName: values.name,
+            subTaskDescription: values.description,
             dateCreated: dateCreated,
             dueDate: values.dueDate,
-            isCompleted: false
+            isCompleted: false,
+            taskItemId: id
         }
 
-        if (id != -1){
-            task.taskItemId = Number(id)
-            console.log("Update existing task object: ")
-            console.log(task)
-            updateTask(id, task)
+        if (sub_id != -1){
+            sub_task.subTaskId = Number(sub_id)
+            console.log("Update existing subtask object: ")
+            console.log(sub_task)
+            updateSubTask(id, sub_id, sub_task)
             .then(respone => {
-                console.log(respone)
-                navigate("/")
+                console.log(respone.data)
+                navigate(`/list-sub-tasks/${id}`)
             })
             .catch(
                 error => {
@@ -62,13 +64,13 @@ function TaskComponent(){
                     setTimeout(()=> setMessage(""), 2000)
             })
         } else {
-            task.dateCreated = getTodaysDate()
+            sub_task.dateCreated = getTodaysDate()
             console.log("New task object: ")
-            console.log(task)
-            createNewTask(task)
+            console.log(sub_task)
+            createNewSubTask(id, sub_task)
             .then(respone => {
                 console.log(respone)
-                navigate("/")
+                navigate(`/list-sub-tasks/${id}`)
             })
             .catch(error => {
                 console.log(error)
@@ -107,7 +109,7 @@ function TaskComponent(){
 
     return (
         <div className="container-fluid">
-            <h1 className="mb-4">Enter your new task details</h1>
+            <h1 className="mb-4">Enter your new sub task details for Task id: {id}</h1>
             <Formik 
             initialValues={{name, description, dueDate}} 
             enableReinitialize={true}
@@ -160,4 +162,4 @@ function TaskComponent(){
     )
 }
 
-export default TaskComponent
+export default SubTaskComponent

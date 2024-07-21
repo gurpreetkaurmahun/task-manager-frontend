@@ -5,6 +5,7 @@ import HeaderComponent from './HeaderComponent'
 import ListTasks from './ListTasks'
 import ListSubTasks from './ListSubTasks'
 import TaskComponent from './TaskComponent'
+import SubTaskComponent from './SubTaskComponent'
 
 function TaskApp(){
     return (
@@ -22,6 +23,10 @@ function TaskApp(){
 
                     <Route path='/tasks/:id' element={
                         <TaskComponent />
+                    }></Route>
+
+                    <Route path='/tasks/:id/subtasks/:sub_id' element={
+                        <SubTaskComponent />
                     }></Route>
                 </Routes>
             </BrowserRouter>

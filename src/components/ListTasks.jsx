@@ -53,7 +53,7 @@ function ListTasks(){
     
     return (
         <div className="container-fluid">
-            <h1>Your Tasks</h1>
+            <h1 className="mb-4">Your Tasks</h1>
             {message && <div className="alert alert-danger">{message}</div>}
             <div>
                 <table className='table'>
@@ -84,7 +84,7 @@ function ListTasks(){
                                         <td>{tasks.subTasks.length}</td>
                                         <td> <button className="btn btn-warning" onClick={() => updateTask(tasks.taskItemId)}>Update</button></td>
                                         <td> <button className="btn btn-danger" onClick={() => deleteTaskForId(tasks.taskItemId)}>Delete</button></td>
-                                        <td> <button className="btn btn-success" onClick={() => showSubTasks(tasks.taskItemId)} disabled={tasks.subTasks.length==0}>Sub Tasks</button></td>
+                                        <td> <button className="btn btn-success" onClick={() => showSubTasks(tasks.taskItemId)}>Sub Tasks</button></td>
                                     </tr>
                                     )
                                 )
