@@ -28,7 +28,18 @@ function ListSubTasks(){
     }
 
     function deleteSubTask(id){
-        console.log("Delete task clicked" + id)
+        console.log("Delete subtask clicked for id: " + id)
+        deleteSubTask(id)
+        .then(response => {
+            setMessage(`Deleted subtask with id: ${id}`)
+            refreshSubTasks()
+            setTimeout(()=> setMessage(""), 2000)
+        })
+        .catch(error => {
+            console.log(error)
+            setMessage(error.response.data.message)
+            setTimeout(()=> setMessage(""), 2000)
+        })
     }
 
     
