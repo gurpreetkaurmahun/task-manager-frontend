@@ -1,3 +1,7 @@
+# Task Manager Frontend
+
+React frontend to talk to backend service for the Task Manager application.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
