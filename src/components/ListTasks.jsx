@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { retreiveAllTasks, deleteTask } from "./api/TasksApiServiceCall";
 import { useNavigate } from "react-router-dom";
+import { updateTask } from "./api/TasksApiServiceCall";
 
 function ListTasks(){
 
     const [tasks, setTasks] = useState([])
     const [message, setMessage] = useState("")
+    const [sMessage, setSMessage] = useState("")
     const navigate = useNavigate()
 
     function refreshTasks(){
@@ -17,16 +19,47 @@ function ListTasks(){
     }
 
     // Runs on first call only once
-    useEffect(() => refreshTasks(), [])
+    useEffect(() => refreshTasks(), [sMessage])
 
     function addNewTask(){
         console.log("Add new task button clicked")
         navigate(`/tasks/-1`)
     }
 
-    function updateTask(id){
-        console.log("Update task clicked: " + id)
+    function updateTaskForId(id){
+        console.log("Update task clicked for id: " + id)
         navigate(`/tasks/${id}`)
+    }
+
+    function markAsCompleteTaskForId(id, name, description, dateCreated, dueDate){
+        console.log("Mark as complete button clicked for id: " + id)
+
+        const task = {
+            taskItemId: Number(id),
+            taskItemName: name,
+            taskItemDescription: description,
+            dateCreated: dateCreated,
+            dueDate: dueDate,
+            isCompleted: true
+        }
+
+        console.log("Mark as complete existing task object: ")
+        console.log(task)
+
+        updateTask(id, task)
+        .then(response => {
+            console.log(response)
+            setSMessage(response.data.message)
+            setTimeout(()=> setSMessage(""), 2000)
+            navigate("/")
+        })
+        .catch(
+            error => {
+                console.log(error)
+                setMessage(error.response.data.message)
+                setTimeout(()=> setMessage(""), 2000)
+        })
+       
     }
 
     function deleteTaskForId(id){
@@ -45,7 +78,7 @@ function ListTasks(){
 
     }
 
-    function showSubTasks(id){
+    function showSubTasksForId(id){
         console.log("Show subtasks clicked for id: " + id)
         navigate(`/list-sub-tasks/${id}`)
     }
@@ -55,6 +88,7 @@ function ListTasks(){
         <div className="container-fluid">
             <h1 className="mb-4">Your Tasks</h1>
             {message && <div className="alert alert-danger">{message}</div>}
+            {sMessage && <div className="alert alert-success">{sMessage}</div>}
             <div>
                 <table className='table'>
                     <thead>
@@ -66,6 +100,7 @@ function ListTasks(){
                             <th>Due Date</th>
                             <th>Is Completed</th>
                             <th>Total Sub Tasks</th>
+                            <th>Action</th>
                             <th>Update</th>
                             <th>Delete</th>
                             <th>Sub Tasks</th>
@@ -82,9 +117,10 @@ function ListTasks(){
                                         <td>{tasks.dueDate}</td>
                                         <td>{tasks.isCompleted.toString()}</td>
                                         <td>{tasks.subTasks.length}</td>
-                                        <td> <button className="btn btn-warning" onClick={() => updateTask(tasks.taskItemId)}>Update</button></td>
-                                        <td> <button className="btn btn-danger" onClick={() => deleteTaskForId(tasks.taskItemId)}>Delete</button></td>
-                                        <td> <button className="btn btn-success" onClick={() => showSubTasks(tasks.taskItemId)}>Sub Tasks</button></td>
+                                        <td> <button className="btn btn-primary" onClick={() => markAsCompleteTaskForId(tasks.taskItemId, tasks.taskItemName, tasks.taskItemDescription, tasks.dateCreated, tasks.dueDate)} disabled={tasks.isCompleted == true}>Complete</button></td>
+                                        <td> <button className="btn btn-warning" onClick={() => updateTaskForId(tasks.taskItemId)} disabled={tasks.isCompleted == true}>Update</button></td>
+                                        <td> <button className="btn btn-danger" onClick={() => deleteTaskForId(tasks.taskItemId)} disabled={tasks.isCompleted == false}>Delete</button></td>
+                                        <td> <button className="btn btn-success" onClick={() => showSubTasksForId(tasks.taskItemId)}>Sub Tasks</button></td>
                                     </tr>
                                     )
                                 )
