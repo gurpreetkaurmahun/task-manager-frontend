@@ -11,7 +11,7 @@ function HeaderComponent(){
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav">
                             <li className="nav-item fs-5 px-2">
-                                Todos
+                                <Link className="nav-link" to="/" style={{color: "black"}}>Tasks</Link>
                             </li>
                         </ul>
                     </div>
