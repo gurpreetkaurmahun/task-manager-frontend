@@ -17,4 +17,4 @@ Once all libraries are installed, navigate to the project directory, and run:
 This runs the app in the development mode.\
 
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-The backend base url is set to http://127.0.0.1:5257 in file src/components/api/ApiClient.jsx file. Please update the host and port as per your setup. 
+The backend base url is set to http://127.0.0.1:5257 in file src/components/api/ApiClient.jsx file. Please update the host and port as per your setup.
